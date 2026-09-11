@@ -1,0 +1,24 @@
+services:
+  memos-wechat:
+    # 镜像来源二选一：
+    #   用 CI 产物： docker compose up -d           （按下行 image 拉取）
+    #   本地构建：  docker compose up -d --build   （按 build 指令构建）
+    # image 需与你的 GitHub 用户名/仓库名一致，否则拉不到镜像
+    image: ghcr.io/jingyuan/memos-wechat:latest
+    build: .
+    container_name: memos-wechat
+    restart: unless-stopped
+    environment:
+      # 微信测试号后台自定义的 Token（必填）
+      WECHAT_TOKEN: ""
+      # 允许处理消息的唯一发送者 OpenID（必填）
+      WECHAT_ALLOW_OPENID: ""
+      # Memos 实例基地址，不含 /api/v1 前缀（必填）
+      MEMOS_API_URL: "https://memos.example.com"
+      # Memos 访问令牌，即 Bearer 之后的字符串（必填）
+      MEMOS_ACCESS_TOKEN: ""
+      # 容器内监听端口，与 Dockerfile 的 EXPOSE 保持一致
+      LISTEN_PORT: "8080"
+    ports:
+      # 宿主机端口，可用 .env 中的 HOST_PORT 覆盖
+      - "${HOST_PORT:-8080}:8080"
