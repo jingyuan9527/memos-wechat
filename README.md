@@ -59,6 +59,21 @@ docker compose up -d
 docker compose up -d --build
 ```
 
+### 纯镜像部署（docker-compose-ghcr.yml）
+
+只拉取 GHCR 上的 CI 产物，不含 `build` 指令，适合部署机无源码或不想本地构建的场景。配置项全部从 `.env` 读取，令牌不会进入被追踪的 compose 文件：
+
+```bash
+# 1. 准备 .env 并填入 4 个必填项
+cp .env.example .env
+# 2. 拉取并启动
+docker compose -f docker-compose-ghcr.yml up -d
+```
+
+镜像 tag 直接写在 `image` 行，默认 `latest`；要锁版本就把 `:latest` 换成 `:1.0.0`。容器端口固定映射到宿主机 `8080`，不受 `.env` 中 `HOST_PORT` 影响（该项只服务于 `docker-compose.yml`）。
+
+必填项缺失时 compose 会直接报错退出，不会带着空令牌把服务拉起来。
+
 ### 直接使用镜像
 
 ```bash
